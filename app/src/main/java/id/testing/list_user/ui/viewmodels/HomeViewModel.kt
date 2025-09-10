@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import id.testing.list_user.model.ApiResponseItem
 import id.testing.list_user.repository.UserRepository
+import id.testing.list_user.util.AppException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,12 +24,19 @@ class HomeViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(false)
     val isLoading : StateFlow<Boolean> = _isLoading.asStateFlow()
 
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error.asStateFlow()
 
 
-    fun fetchData(){
+    fun fetchData() {
         viewModelScope.launch {
             _isLoading.value = true
-            _users.value = userRepository.fetchUsers()
+            _error.value = null
+            try {
+                _users.value = userRepository.fetchUsers()
+            } catch (e: AppException) {
+                _error.value = e.msg ?: "Something went wrong"
+            }
             _isLoading.value = false
         }
     }

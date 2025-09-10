@@ -30,12 +30,14 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()){
 
     val users by viewModel.users.collectAsState()
     val loading by viewModel.isLoading.collectAsState()
+    val error by viewModel.error.collectAsState()
+
 
     LaunchedEffect (Unit){
         viewModel.fetchData()
     }
 
-    Scaffold (
+    Scaffold(
         topBar = {
             TopAppBar(
                 title = "List User",
@@ -43,26 +45,46 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()){
                 onBackPress = {}
             )
         }
-    ){ innerPadding ->
+    ) { innerPadding ->
 
-        Column (modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding)
-        ){
-            if(loading){
-                Row (
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 32.dp),
-                    horizontalArrangement = Arrangement.Center){
-                    CircularProgressIndicator()
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            when {
+                loading -> {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 32.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
                 }
-            }else{
-                Text("Daftar User")
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ){
-                    items(users){ item ->
-                        UserItem(item)
+                error != null -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = error ?: "",
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                }
+                else -> {
+                    Text("Daftar User")
+                    LazyColumn(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        items(users) { item ->
+                            UserItem(item)
+                        }
                     }
                 }
             }
