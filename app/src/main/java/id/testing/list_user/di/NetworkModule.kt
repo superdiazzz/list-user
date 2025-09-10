@@ -19,31 +19,32 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
-//        val authInterceptor = Interceptor { chain ->
-//            val originalRequest = chain.request()
-//            val newRequest = originalRequest.newBuilder()
-//                .header("Authorization", "Bearer ${BuildConfig.TMDB_API_KEY}")
-//                .header("Content-Type", "application/json")
-//                .build()
-//            chain.proceed(newRequest)
-//        }
-
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
 
+        // Interceptor to force fresh response every time
+        val noCacheInterceptor = Interceptor { chain ->
+            val newRequest = chain.request().newBuilder()
+                .header("Cache-Control", "no-cache")
+                .header("Pragma", "no-cache")
+                .build()
+            chain.proceed(newRequest)
+        }
+
         return OkHttpClient.Builder()
-//            .addInterceptor(authInterceptor)
-            .addInterceptor(loggingInterceptor)
+            .addInterceptor(noCacheInterceptor)   // prevent 304
+            .addInterceptor(loggingInterceptor)   // log request/response
             .build()
     }
 
+
     @Provides
     @Singleton
-    fun provideRetrofit(): Retrofit {
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl(ApiService.BASE_URL)
-            .client(provideOkHttpClient())
+            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
