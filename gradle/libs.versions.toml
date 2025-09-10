@@ -1,6 +1,6 @@
 [versions]
 agp = "8.6.1"
-kotlin = "1.9.0"
+kotlin = "2.1.0"
 # Android Core
 coreKtx = "1.12.0"
 lifecycle = "2.7.0"
@@ -23,6 +23,10 @@ coil = "2.5.0"
 # Coroutines
 coroutines = "1.7.3"
 
+hiltversion = "2.56.2"
+hiltCompilerVer = "1.2.0"
+hiltComposeNav = "1.2.0"
+hiltCommon = "1.2.0"
 # Testing
 junit = "4.13.2"
 androidxJUnit = "1.1.5"
@@ -67,8 +71,17 @@ compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 
+# HILT
+hilt = { module="com.google.dagger:hilt-android", version.ref="hiltversion"}
+hilt-compiler = { module="com.google.dagger:hilt-compiler", version.ref="hiltversion"}
+hilt-android-compiler = {module="com.google.dagger:hilt-android-compiler", version.ref="hiltversion"}
+hilt-hilt-compiler = {module="androidx.hilt:hilt-compiler", version.ref="hiltCompilerVer"}
+hilt-navigation-compose = { module="androidx.hilt:hilt-navigation-compose", version.ref="hiltComposeNav"}
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref="hiltversion"}
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 

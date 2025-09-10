@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.dagger.hilt)
+    alias(libs.plugins.compose.compiler)
     id("kotlin-kapt")
     id("kotlin-parcelize")
 }
@@ -84,6 +86,14 @@ dependencies {
 
     // Coroutines
     implementation(libs.coroutines.android)
+
+    // Hilt
+    implementation(libs.hilt)
+    kapt(libs.hilt.compiler)
+    kapt(libs.hilt.android.compiler)
+    kapt(libs.hilt.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
+
 
     // Testing
     testImplementation(libs.junit)
